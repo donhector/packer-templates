@@ -5,7 +5,6 @@
       "accelerator": "kvm",
       "headless": "true",
 
-      "guest_os_type": "ubuntu-64",
       "memory": 1024,
       "name": "ubuntu-20.04-live-server",
       "iso_urls": [
