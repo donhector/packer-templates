@@ -41,6 +41,7 @@ jobs:
         run: |
           packer validate .
 
+      # Github runner does not support accelerator 'kvm', use 'tcg' instead
       - name: Build ${{ matrix.template }}
         working-directory: templates/${{ matrix.template }}
         run: |
