@@ -44,7 +44,7 @@ jobs:
       - name: Build ${{ matrix.template }}
         working-directory: templates/${{ matrix.template }}
         run: |
-          sed -i 's/kvm/tgc/' ${{ matrix.template }}.pkr.hcl
+          sed -i 's/kvm/tcg/' ${{ matrix.template }}.pkr.hcl
           packer build -color=false -on-error=abort .
         env:
           PACKER_LOG: 1
