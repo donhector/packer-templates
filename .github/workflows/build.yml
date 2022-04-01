@@ -17,7 +17,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build Packer template(s)
+    name: Build
 
     strategy:
       matrix:
@@ -32,6 +32,7 @@ jobs:
 
       - name: Install qemu
         run: |
+          sudo apt update
           sudo apt-get install -y qemu-system-x86
 
       # Packer comes pre-installed in the runner
