@@ -40,7 +40,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: packer_cache/
-          key: cache-${{ hashFiles('packer_cache/*') }}
+          key: cache-${{ hashFiles('~/.cache/packer/*.lock') }}
           restore-keys: |
             cache-
 
