@@ -48,7 +48,6 @@ jobs:
           PACKER_LOG: 1
 
       - uses: actions/upload-artifact@master
-        working-directory: templates/${{ matrix.template }}
         with:
           name: ${{ matrix.template }}
-          path: output/
+          path: templates/${{ matrix.template }}/output/
