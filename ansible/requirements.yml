@@ -1,1 +1,5 @@
 ---
+collections:
+  - name: donhector.workstation
+
+roles: []

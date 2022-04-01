@@ -8,6 +8,7 @@ on:
     path:
       - templates/**
       - ansible/**
+      - .github/workflows/build.yml
   workflow_dispatch:
 
 concurrency:
@@ -34,6 +35,14 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get install -y qemu-system-x86
+
+      - name: Cache Packer
+        uses: actions/cache@v2
+        with:
+          path: packer_cache/
+          key: cache-${{ hashFiles('packer_cache/*') }}
+          restore-keys: |
+            cache-
 
       # Packer comes pre-installed in the runner
       - name: Validate ${{ matrix.template }}

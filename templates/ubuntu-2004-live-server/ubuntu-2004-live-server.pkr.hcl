@@ -24,10 +24,10 @@ source "qemu" "ubuntu-2004-live-server" {
   ssh_timeout            = "30m"
   ssh_username           = "ubuntu"
   ssh_password           = var.ssh_password
-  shutdown_command       = "echo '${var.ssh_password}' | sudo -E -S poweroff"
+  shutdown_command       = "poweroff"
 
-  boot_wait    = "3s"
-  boot_command = ["<enter><enter><f6><esc><wait>", "<bs><bs><bs><bs>", "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ", "--- <enter>"]
+  boot_wait              = "10s"
+  boot_command           = ["<enter><enter><f6><esc><wait>", "<bs><bs><bs><bs>", "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ", "--- <enter>"]
 
 }
 

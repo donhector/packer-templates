@@ -26,7 +26,7 @@ source "qemu" "ubuntu-2204-live-server" {
   ssh_password           = var.ssh_password
   shutdown_command       = "echo '${var.ssh_password}' | sudo -E -S poweroff"
 
-  boot_wait              = "3s"
+  boot_wait              = "20s"
   boot_command           = ["<cOn><cOff>", "<wait5>linux /casper/vmlinuz"," quiet"," autoinstall"," ds='nocloud-net;s=http://{{.HTTPIP}}:{{.HTTPPort}}/'","<enter>","initrd /casper/initrd <enter>","boot <enter>"]
 
 }
