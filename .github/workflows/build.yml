@@ -1,0 +1,54 @@
+---
+name: 👷 Build
+
+on:
+  push
+    branches:
+      - main
+    path:
+      - templates/**
+      - ansible/**
+  workflow_dispatch:
+
+concurrency:
+  group: "packer-${{ github.head_ref}}"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Packer template(s)
+
+    strategy:
+      matrix:
+        template:
+          - "ubuntu-2004-live-server"
+          - "ubuntu-2204-live-server"
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Install qemu
+        run: |
+          sudo apt-get install -y qemu-system-x86
+
+      # Packer comes pre-installed in the runner
+      - name: Validate ${{ matrix.template }}
+        working-directory: templates/${{ matrix.template }}
+        run: |
+          packer validate .
+
+      - name: Build ${{ matrix.template }}
+        working-directory: templates/${{ matrix.template }}
+        run: |
+          packer build -color=false -on-error=abort .
+        env:
+          PACKER_LOG: 1
+
+      - uses: actions/upload-artifact@master
+        working-directory: templates/${{ matrix.template }}
+        with:
+          name: ${{ matrix.template }}
+          path: output/

@@ -1,0 +1,43 @@
+#cloud-config
+autoinstall:
+  version: 1
+
+  # Ensure we get latest subiquity installer to benefit from bugfixes and new features
+  refresh-installer:
+    update: yes
+    channel: edge
+
+  # Cloud init custom stuff, complements what subiquity offers out of the box 
+  user-data:
+    hostname: ubuntu
+    timezone: Europe/Madrid
+    disable_root: true
+    ntp:
+      enabled: true
+    # I prefer this over subiquity's not so flexible 'identity' section.
+    users:
+      - name: ubuntu
+        groups: users,adm,cdrom,sudo,dip,plugdev,lxd
+        shell: /bin/bash
+        lock-passwd: false
+        # Generated via: openssl passwd -6
+        passwd: $6$Ju7jsj0ds7vsK5FO$NVRBGIuANvu8v.3.SZ4T7YTTYOY5D/S7ZPWs1d5KxVw.36DFQEdBeFNjoMdrVPOBYjq6NS5mRhE6bxnAmtrNs1
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        ssh_import_id: gh:donhector
+
+  # Configure SSH server
+  ssh:
+    install-server: true
+    allow-pw: true
+
+  # Setup the disks partitions
+  storage:
+    layout:
+      name: lvm
+  
+  # Install APT packages
+  packages:
+    - qemu-guest-agent   
+  
+  # Perform package upgrades and install security updates
+  updates: all
