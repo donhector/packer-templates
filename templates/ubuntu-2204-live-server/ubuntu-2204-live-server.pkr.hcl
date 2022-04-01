@@ -8,7 +8,7 @@ source "qemu" "ubuntu-2204-live-server" {
   ]
   
   headless               = true
-  accelerator            = "kvm"
+  accelerator            = var.accelerator
   http_directory         = "http"
   output_directory       = "output"
   vm_name                = "ubuntu2204-${local.timestamp}.${var.format}"

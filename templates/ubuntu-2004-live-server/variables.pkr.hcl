@@ -24,6 +24,12 @@ variable "format" {
   description = "Disk image format. Qemu supports 'qcow2' or 'raw'"
 }
 
+variable "accelerator" {
+  type        = string
+  default     = "kvm"
+  description = "Host acceleration type to use."
+}
+
 
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")

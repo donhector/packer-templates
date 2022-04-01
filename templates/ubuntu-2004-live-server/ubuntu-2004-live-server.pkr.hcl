@@ -2,13 +2,13 @@
 source "qemu" "ubuntu-2004-live-server" {
 
   iso_checksum = "file:https://releases.ubuntu.com/20.04/SHA256SUMS"
-  iso_urls     = [
+  iso_urls = [
     "iso/ubuntu-20.04.4-live-server-amd64.iso",
     "https://releases.ubuntu.com/focal/ubuntu-20.04.4-live-server-amd64.iso"
   ]
 
   headless               = true
-  accelerator            = "kvm"
+  accelerator            = var.accelerator
   http_directory         = "http"
   output_directory       = "output"
   vm_name                = "ubuntu2004-${local.timestamp}.${var.format}"
@@ -26,8 +26,8 @@ source "qemu" "ubuntu-2004-live-server" {
   ssh_password           = var.ssh_password
   shutdown_command       = "echo '${var.ssh_password}' | sudo -E -S poweroff"
 
-  boot_wait              = "3s"
-  boot_command           = ["<enter><enter><f6><esc><wait>","<bs><bs><bs><bs>","autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ","--- <enter>"]
+  boot_wait    = "3s"
+  boot_command = ["<enter><enter><f6><esc><wait>", "<bs><bs><bs><bs>", "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ", "--- <enter>"]
 
 }
 
