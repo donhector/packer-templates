@@ -26,7 +26,7 @@ source "qemu" "ubuntu-2004-live-server" {
   ssh_password           = var.ssh_password
   shutdown_command       = "poweroff"
 
-  boot_wait              = "10s"
+  boot_wait              = "3s"
   boot_command           = ["<enter><enter><f6><esc><wait>", "<bs><bs><bs><bs>", "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ", "--- <enter>"]
 
 }
@@ -55,7 +55,7 @@ build {
     playbook_dir    = "ansible"
     command         = "ANSIBLE_FORCE_COLOR=1 PYTHONUNBUFFERED=1 ansible-playbook"
     playbook_file   = "ansible/playbook.yml"
-    # extra_arguments = ["-vvv"]
+    extra_arguments = ["-vvv"]
     # galaxy_command          = "ansible-galaxy"
     # galaxy_file             = "ansible/requirements.yml"
     clean_staging_directory = true

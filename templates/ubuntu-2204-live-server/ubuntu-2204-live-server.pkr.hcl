@@ -55,7 +55,7 @@ build {
     playbook_dir    = "ansible"
     command         = "ANSIBLE_FORCE_COLOR=1 PYTHONUNBUFFERED=1 ansible-playbook"
     playbook_file   = "ansible/playbook.yml"
-    # extra_arguments = ["-vvv"]
+    extra_arguments = ["-vvv"]
     # galaxy_command          = "ansible-galaxy"
     # galaxy_file             = "ansible/requirements.yml"
     clean_staging_directory = true
