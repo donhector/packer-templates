@@ -1,0 +1,6 @@
+---
+collections:
+  - name: donhector.workstation
+
+roles:
+  - name: geerlingguy.docker

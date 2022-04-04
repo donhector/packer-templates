@@ -33,16 +33,43 @@ source "qemu" "ubuntu-2004-live-server" {
 
 build {
 
-  #name = "gold"
-
   sources = ["source.qemu.ubuntu-2004-live-server"]
 
-  provisioner "shell" {
-    inline = ["echo Inline Provisioner example -> ${build.name} :: ${build.ID}"]
+  # workaround for dealing with requirements that include roles and collections
+  # See https://github.com/hashicorp/packer-plugin-ansible/issues/32
+
+  provisioner "file" {
+    source      = "ansible/requirements.yml"
+    destination = "/tmp/"
   }
 
+  provisioner "shell" {
+    inline = [
+      "sudo apt install -y ansible",
+      "ansible-galaxy install -r /tmp/requirements.yml"
+    ]
+  }
+
+  # Runs on the VM being built
+  provisioner "ansible-local" {
+    playbook_dir    = "ansible"
+    command         = "ANSIBLE_FORCE_COLOR=1 PYTHONUNBUFFERED=1 ansible-playbook"
+    playbook_file   = "ansible/playbook.yml"
+    # extra_arguments = ["-vvv"]
+    # galaxy_command          = "ansible-galaxy"
+    # galaxy_file             = "ansible/requirements.yml"
+    clean_staging_directory = true
+  }
+
+  # Runs on the VM being built
+  provisioner "shell" {
+    inline            = ["sudo reboot"]
+    expect_disconnect = true
+  }
+
+  # Runs on the Packer host
   post-processor "shell-local" {
-    inline = ["echo Hello World from ${source.type}.${source.name}"]
+    inline = ["echo Build ${source.type}.${source.name} finished!"]
   }
 
 }

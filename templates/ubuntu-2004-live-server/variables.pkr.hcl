@@ -30,7 +30,6 @@ variable "accelerator" {
   description = "Host acceleration type to use."
 }
 
-
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
 }

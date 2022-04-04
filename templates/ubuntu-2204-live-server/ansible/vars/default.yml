@@ -1,0 +1,28 @@
+---
+
+common_packages:
+  - curl
+  - wget
+  - git
+  - vim
+  - tree
+  - rsync
+  - zip
+  - unzip
+  - ca-certificates
+  - apt-transport-https
+  - software-properties-common
+  - build-essential
+  - unattended-upgrades
+  - jq
+  - socat
+  - htop
+  - iotop
+  - iftop
+  - iperf3
+  - keychain
+  - quemu-guest-agent
+
+docker_compose_version: "1.29.2"
+docker_users:
+  - ubuntu

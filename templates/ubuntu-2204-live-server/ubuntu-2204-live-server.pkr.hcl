@@ -2,11 +2,11 @@
 source "qemu" "ubuntu-2204-live-server" {
 
   iso_checksum = "file:http://cdimage.ubuntu.com/ubuntu-server/daily-live/pending/SHA256SUMS"
-  iso_urls     = [
+  iso_urls = [
     "iso/jammy-live-server-amd64.iso",
     "http://cdimage.ubuntu.com/ubuntu-server/daily-live/pending/jammy-live-server-amd64.iso"
   ]
-  
+
   headless               = true
   accelerator            = var.accelerator
   http_directory         = "http"
@@ -24,25 +24,52 @@ source "qemu" "ubuntu-2204-live-server" {
   ssh_timeout            = "30m"
   ssh_username           = "ubuntu"
   ssh_password           = var.ssh_password
-  shutdown_command       = "echo '${var.ssh_password}' | sudo -E -S poweroff"
+  shutdown_command       = "poweroff"
 
   boot_wait              = "20s"
-  boot_command           = ["<cOn><cOff>", "<wait5>linux /casper/vmlinuz"," quiet"," autoinstall"," ds='nocloud-net;s=http://{{.HTTPIP}}:{{.HTTPPort}}/'","<enter>","initrd /casper/initrd <enter>","boot <enter>"]
+  boot_command           = ["<cOn><cOff>", "<wait5>linux /casper/vmlinuz", " quiet", " autoinstall", " ds='nocloud-net;s=http://{{.HTTPIP}}:{{.HTTPPort}}/'", "<enter>", "initrd /casper/initrd <enter>", "boot <enter>"]
 
 }
 
 build {
 
-  #name = "gold"
-
   sources = ["source.qemu.ubuntu-2204-live-server"]
 
-  provisioner "shell" {
-    inline = ["echo Inline Provisioner example -> ${build.name} :: ${build.ID}"]
+  # workaround for dealing with requirements that include roles and collections
+  # See https://github.com/hashicorp/packer-plugin-ansible/issues/32
+
+  provisioner "file" {
+    source      = "ansible/requirements.yml"
+    destination = "/tmp/"
   }
 
+  provisioner "shell" {
+    inline = [
+      "sudo apt install -y ansible",
+      "ansible-galaxy install -r /tmp/requirements.yml"
+    ]
+  }
+
+  # Runs on the VM being built
+  provisioner "ansible-local" {
+    playbook_dir    = "ansible"
+    command         = "ANSIBLE_FORCE_COLOR=1 PYTHONUNBUFFERED=1 ansible-playbook"
+    playbook_file   = "ansible/playbook.yml"
+    # extra_arguments = ["-vvv"]
+    # galaxy_command          = "ansible-galaxy"
+    # galaxy_file             = "ansible/requirements.yml"
+    clean_staging_directory = true
+  }
+
+  # Runs on the VM being built
+  provisioner "shell" {
+    inline            = ["sudo reboot"]
+    expect_disconnect = true
+  }
+  
+  # Runs on the Packer host
   post-processor "shell-local" {
-    inline = ["echo Hello World from ${source.type}.${source.name}"]
+    inline = ["echo Build ${source.type}.${source.name} finished!"]
   }
 
 }

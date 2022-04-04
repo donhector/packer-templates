@@ -1,0 +1,31 @@
+---
+
+- name: Setup playbook
+  hosts: 127.0.0.1
+  connection: local
+
+  vars_files:
+    - vars/default.yml
+
+  roles:
+    - { role: geerlingguy.docker, become: yes }
+
+  tasks:
+    - name: Setup workstation
+      ansible.builtin.include_role:
+        name: "{{ rolename }}"
+      loop:
+        - donhector.workstation.common
+        - donhector.workstation.python
+        - donhector.workstation.asdf
+        - donhector.workstation.apt_proxy
+        - donhector.workstation.awscli
+        - donhector.workstation.bat
+        - donhector.workstation.fd
+        - donhector.workstation.fzf
+        - donhector.workstation.gh
+        - donhector.workstation.jq
+        - donhector.workstation.ripgrep
+        - donhector.workstation.yq
+      loop_control:
+        loop_var: rolename

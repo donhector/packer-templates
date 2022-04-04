@@ -2,4 +2,5 @@
 collections:
   - name: donhector.workstation
 
-roles: []
+roles:
+  - name: geerlingguy.docker

@@ -35,9 +35,9 @@ autoinstall:
     layout:
       name: lvm
   
-  # Install APT packages
-  packages:
-    - qemu-guest-agent   
-  
   # Perform package upgrades and install security updates
   updates: all
+
+  # late-commands:
+    # Disable root Login
+    # - sed -i -e '/^#PermitRootLogin/s/^.*$/PermitRootLogin no/' /etc/ssh/sshd_config
