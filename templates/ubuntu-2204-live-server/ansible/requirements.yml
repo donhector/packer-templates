@@ -1,6 +1,7 @@
 ---
 collections:
   - name: donhector.workstation
+  - name: community.general
 
 roles:
   - name: geerlingguy.docker

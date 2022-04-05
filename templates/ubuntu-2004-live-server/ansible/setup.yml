@@ -10,8 +10,6 @@
   roles:
     - donhector.workstation.common
     - donhector.workstation.python
-    - donhector.workstation.asdf
-    - donhector.workstation.apt_proxy
     - donhector.workstation.awscli
     - donhector.workstation.bat
     - donhector.workstation.fd
@@ -20,5 +18,6 @@
     - donhector.workstation.jq
     - donhector.workstation.ripgrep
     - donhector.workstation.yq
+    # - donhector.workstation.asdf
     - { role: geerlingguy.docker, become: yes }
 

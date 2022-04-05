@@ -24,7 +24,7 @@ source "qemu" "ubuntu-2004-live-server" {
   ssh_timeout            = "30m"
   ssh_username           = "ubuntu"
   ssh_password           = var.ssh_password
-  shutdown_command       = "poweroff"
+  shutdown_command       = "echo '${var.ssh_password}' | sudo -S poweroff"
 
   boot_wait              = "3s"
   boot_command           = ["<enter><enter><f6><esc><wait>", "<bs><bs><bs><bs>", "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ", "--- <enter>"]
@@ -43,10 +43,19 @@ build {
     destination = "/tmp/"
   }
 
+  # Runs on the VM being built. Ensure latest ansible
+  # 2004 ships with a relatively old version of ansible that does not
+  # support requirments.yml that include both roles and collections
+  # hence calling ansible-galaxy twice, one for installing roles one for collections
   provisioner "shell" {
     inline = [
+      "sudo apt update",
+      "sudo apt install -y software-properties-common",
+      "sudo apt-add-repository ppa:ansible/ansible -y",
+      "sudo apt update",
       "sudo apt install -y ansible",
-      "ansible-galaxy install -r /tmp/requirements.yml"
+      "ansible-galaxy role install -r /tmp/requirements.yml",
+      "ansible-galaxy collection install -r /tmp/requirements.yml"
     ]
   }
 

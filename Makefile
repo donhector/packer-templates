@@ -14,6 +14,8 @@ ubuntu2004-liveserver-lint:
 		packer validate . && \
 		packer fmt .
 
+#########
+
 ubuntu2204-liveserver:
 	@cd templates/ubuntu-2204-live-server && \
 		packer init . && \
@@ -26,5 +28,22 @@ ubuntu2204-liveserver-debug:
 
 ubuntu2204-liveserver-lint:
 	@cd templates/ubuntu-2204-live-server && \
+		packer validate . && \
+		packer fmt .
+
+###########
+
+ubuntu2204-cloudimg:
+	@cd templates/ubuntu-2004-cloudimg && \
+		packer init . && \
+		packer build -force .
+
+ubuntu2204-cloudimg-debug:
+	@cd templates/ubuntu-2004-cloudimg && \
+		packer init . && \
+		PACKER_LOG=1 packer build -on-error=ask -force .
+
+ubuntu2204-cloudimg-lint:
+	@cd templates/ubuntu-2004-cloudimg && \
 		packer validate . && \
 		packer fmt .

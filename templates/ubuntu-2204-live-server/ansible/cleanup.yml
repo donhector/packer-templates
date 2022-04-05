@@ -6,18 +6,35 @@
   become: true
 
   tasks:
-    - name: Truncate files
-      command: "truncate -s 0 {{ item }}"
-      loop:
-        - /etc/machine-id
-
-    - name: Remove folders.
+    - name: Remove files and folders.
       file:
         path: "{{ item }}"
         state: absent
       loop:
         - /var/lib/cloud
         - /var/log/installer
+        - /var/log/btmp
+        - /var/log/wtmp
+        - /var/log/lastlog
+        - /root/.bash_history
+        - /home/{{ ansible_env.SUDO_USER }}/.bash_history
 
-    - name: Clean Cache
-      command: apt autoremove
+    - name: Truncate log files
+      shell: |
+        find /var/log -type f | while read f; do echo -ne '' > "${f}"; done;
+
+    - name: Reset the machine-id
+      block:
+        - name: Empty machine-id
+          copy:
+            content: ""
+            dest: /etc/machine-id
+        - name: Remove the dbus machine-id
+          file:
+            path: /var/lib/dbus/machine-id
+            state: absent
+
+    - name: Clean packages
+      apt:
+        autoclean: yes
+        autoremove: yes

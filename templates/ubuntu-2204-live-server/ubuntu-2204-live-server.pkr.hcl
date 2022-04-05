@@ -24,7 +24,7 @@ source "qemu" "ubuntu-2204-live-server" {
   ssh_timeout            = "30m"
   ssh_username           = "ubuntu"
   ssh_password           = var.ssh_password
-  shutdown_command       = "poweroff"
+  shutdown_command       = "echo '${var.ssh_password}' | sudo -S poweroff"
 
   boot_wait              = "20s"
   boot_command           = ["<cOn><cOff>", "<wait5>linux /casper/vmlinuz", " quiet", " autoinstall", " ds='nocloud-net;s=http://{{.HTTPIP}}:{{.HTTPPort}}/'", "<enter>", "initrd /casper/initrd <enter>", "boot <enter>"]
@@ -43,10 +43,14 @@ build {
     destination = "/tmp/"
   }
 
+  # Runs on the VM being built.
+  # 2204 ships with a modern enough version of ansible
+  # that knows how to handle requirements.yml with both roles and collections
   provisioner "shell" {
     inline = [
+      "sudo apt update",
       "sudo apt install -y ansible",
-      "ansible-galaxy install -r /tmp/requirements.yml"
+      "ansible-galaxy install -r /tmp/requirements.yml",
     ]
   }
 
